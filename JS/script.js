@@ -42,7 +42,15 @@ const imcTable = document.querySelector("#imc-table");
 const heightInput = document.querySelector("#heigth");
 const weightInput = document.querySelector("#weight");
 const calcBtn = document.querySelector("#calc-btn");
-const clearBtn = document.querySelector("clear-btn");
+const clearBtn = document.querySelector("#clear-btn");
+
+const calcContainer = document.querySelector("#calc-container");
+const resultContainer = document.querySelector("#result-container");
+
+const imcNumber = document.querySelector("#imc-number span");
+const imcInfo = document.querySelector("#imc-info span");
+
+const backBtn = document.querySelector("#back-btn")
 
 //Funções0
 function createTable(data) {
@@ -68,15 +76,36 @@ function createTable(data) {
     });
 } 
 
+function cleanInputs() {
+  heightInput.value = ""
+  weightInput.value = ""
+  imcNumber.classList = "";
+  imcInfo.classList = "";
+}
+
+function calcImc(weight, heigth) {
+  const imc = (weight / (heigth * heigth)).toFixed(1);
+
+  return imc;
+}
 
 
+function showOrHideResult() {
+  calcContainer.classList.toggle("hide");
+  resultContainer.classList.toggle("hide");
+}
 
 
 //Inicialização
 createTable(data)
 
-//Eventos
 
+//Eventos
+clearBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+
+  cleanInputs();
+})
 
 
 calcBtn.addEventListener("click", (e) => {
@@ -86,5 +115,58 @@ calcBtn.addEventListener("click", (e) => {
   const weight = +weightInput.value.replace(",", ".")
   const heigth = +heightInput.value.replace(",", ".")
 
-  console.log(weight, heigth)
+  if(!weight || !heigth) return;
+
+  const imc = calcImc(weight, heigth)
+  
+  let info;
+
+  data.forEach((item) => {
+    if(imc >= item.min && imc <= item.max){
+      info = item.info;
+    }
+  })
+
+
+  if(!info) return;
+
+  imcNumber.innerText = imc;
+  imcInfo.innerText = info;
+
+  switch(info){
+
+    case "Magreza":
+      imcNumber.classList.add("low");
+      imcInfo.classList.add("low");
+      break
+
+    case "Normal":
+      imcNumber.classList.add("good");
+      imcInfo.classList.add("good");
+      break
+
+    case "Sobrepeso":
+      imcNumber.classList.add("medium");
+      imcInfo.classList.add("medium");
+      break
+
+    case "Obesidade":
+      imcNumber.classList.add("low");
+      imcInfo.classList.add("low");
+      break
+
+    case "Obesidade grave":
+      imcNumber.classList.add("high");
+      imcInfo.classList.add("high");
+      break
+
+  }
+
+  showOrHideResult();
+});
+
+
+backBtn.addEventListener("click", () =>{
+  cleanInputs();
+  showOrHideResult();
 })
