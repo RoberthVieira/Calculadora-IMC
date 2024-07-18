@@ -68,7 +68,23 @@ function createTable(data) {
     });
 } 
 
+
+
+
+
 //Inicialização
 createTable(data)
 
 //Eventos
+
+
+
+calcBtn.addEventListener("click", (e) => {
+
+  e.preventDefault();
+
+  const weight = +weightInput.value.replace(",", ".")
+  const heigth = +heightInput.value.replace(",", ".")
+
+  console.log(weight, heigth)
+})
